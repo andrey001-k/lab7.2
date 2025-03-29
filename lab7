@@ -1,78 +1,79 @@
 #include <iostream>
+#include <vector>
 
-const int M = 20, N = 20;
+using namespace std;
 
-void printMatrix(int matr1[][N], int row, int col) {
-    for (int i = 0; i < row; i++) {
-        for (int j = 0; j < col; j++) {
-            std::cout << matr1[i][j] << "\t";
+void printMatrix(const vector<vector<int>>& matrix) {
+    for (const auto& row : matrix) {
+        for (int elem : row) {
+            cout << elem << "\t";
         }
-        std::cout << std::endl;
+        cout << endl;
     }
 }
 
-int findFirstOddColumn(int matr1[][N], int row, int col) {
+int findFirstOddColumn(const vector<vector<int>>& matrix) {
+    int row = matrix.size();
+    int col = matrix[0].size();
+
     for (int j = 0; j < col; j++) {
         bool allOdd = true;
         for (int i = 0; i < row; i++) {
-            if (matr1[i][j] % 2 == 0) {
+            if (matrix[i][j] % 2 == 0) {
                 allOdd = false;
                 break;
             }
         }
-        if (allOdd) return j + 1; // Повертаємо номер стовпця (від 1)
+        if (allOdd) return j + 1; // возвращаем номер столбца (с 1)
     }
     return 0;
 }
 
-void deleteColumn(int matr1[][N], int& row, int& col, int K) {
-    if (K < 1 || K > col) {
-        std::cout << "Неправильний номер стовпця!" << std::endl;
+void deleteColumn(vector<vector<int>>& matrix, int K) {
+    if (K < 1 || K > matrix[0].size()) {
+        cout << "Неправильный номер столбца!" << endl;
         return;
     }
 
-    for (int i = 0; i < row; i++) {
-        for (int j = K - 1; j < col - 1; j++) {
-            matr1[i][j] = matr1[i][j + 1];
-        }
+    for (auto& row : matrix) {
+        row.erase(row.begin() + (K - 1)); // удаляем K-й столбец
     }
-    col--; // Зменшуємо кількість стовпців
 }
 
 int main() {
     int row, col, K;
-    std::cout << "Введіть кількість рядків (2-20): ";
-    std::cin >> row;
-    std::cout << "Введіть кількість стовпців (2-20): ";
-    std::cin >> col;
+    cout << "Введите количество строк (2-20): ";
+    cin >> row;
+    cout << "Введите количество столбцов (2-20): ";
+    cin >> col;
 
     if (row < 2 || row > 20 || col < 2 || col > 20) {
-        std::cout << "Помилка: невірні розміри матриці!" << std::endl;
+        cout << "Ошибка: неверные размеры матрицы!" << endl;
         return 1;
     }
 
-    int matr1[M][N];
+    vector<vector<int>> matrix(row, vector<int>(col));
 
-    std::cout << "Введіть елементи матриці:" << std::endl;
+    cout << "Введите элементы матрицы:" << endl;
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
-            std::cin >> matr1[i][j];
+            cin >> matrix[i][j];
         }
     }
 
-    std::cout << "Початкова матриця:" << std::endl;
-    printMatrix(matr1, row, col);
+    cout << "Начальная матрица:" << endl;
+    printMatrix(matrix);
 
-    int firstOddColumn = findFirstOddColumn(matr1, row, col);
-    std::cout << "Номер першого стовпця з непарними числами: " << firstOddColumn << std::endl;
+    int firstOddColumn = findFirstOddColumn(matrix);
+    cout << "Номер первого столбца с нечетными числами: " << firstOddColumn << endl;
 
-    std::cout << "Введіть номер стовпця для видалення (1-" << col << "): ";
-    std::cin >> K;
+    cout << "Введите номер столбца для удаления (1-" << col << "): ";
+    cin >> K;
 
-    deleteColumn(matr1, row, col, K);
+    deleteColumn(matrix, K);
 
-    std::cout << "Матриця після видалення стовпця " << K << ":" << std::endl;
-    printMatrix(matr1, row, col);
+    cout << "Матрица после удаления столбца " << K << ":" << endl;
+    printMatrix(matrix);
 
     return 0;
 }
